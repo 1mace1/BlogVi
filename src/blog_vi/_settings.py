@@ -1,9 +1,13 @@
 from pathlib import Path
 from typing import Optional
+from environs import Env
 
 import yaml
 
 from ._config import SETTINGS_DEFAULTS, SETTINGS_FILENAME
+
+env = Env()
+env.read_env()
 
 
 class SettingsError(Exception):
@@ -61,6 +65,13 @@ class Settings:
         # Fill optional settings.
         for optional_name, optional_default in self.optional.items():
             self.__dict__.update({optional_name: settings.get(optional_name, optional_default)})
+
+        # Fill other settings if they exist
+        for key, value in settings.items():
+            try:
+                self.__dict__.update({key: settings[key]})
+            except KeyError:
+                pass
 
 
 def get_settings(filename: str = SETTINGS_FILENAME) -> dict:

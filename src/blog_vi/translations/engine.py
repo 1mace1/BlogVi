@@ -1,3 +1,7 @@
+from copy import copy
+
+from .exceptions import TranslateEngineNotFound
+from .registry import translation_provider_registry
 from blog_vi.__main__ import Landing, Article
 
 
@@ -8,9 +12,10 @@ class TranslateEngine:
 
         self.settings = landing.settings
 
-        # TODO:
-        #   - Validate settings
-        #   - Get translate provider from registry
+        self.translator = self.settings.translator
+
+        if not self.translator:
+            raise TranslateEngineNotFound(f'{self.translator} not found')
 
     def translate(self) -> None:
         """Translate landing and its articles into specified in the settings languages."""
@@ -23,19 +28,42 @@ class TranslateEngine:
         Translate landing and its articles into the target language,
         specified by `target_abbreviation` param.
         """
-        translated_landing = self.clone_landing_for_translation()
+        translated_landing = self.clone_landing_for_translation(target_abbreviation)
 
         for article in self.landing._articles:
-            # TODO:
-            #   - Translate article by calling `self.translate_article` for each existing article
-            #   - Add translated article to the `translated_landing`
-            pass
+            translated_landing.add_article(self.translate_article(article, target_abbreviation))
+
+        return translated_landing
 
     def translate_article(self, article: Article, target_abbreviation: str) -> Article:
         """
         Translate article title, summary and text into the target language,
         specified by `target_abbreviation` param.
         """
+
+        translator_cls = translation_provider_registry.get_provider(self.translator)
+        translator = translator_cls(api_key='')
+        cloned_article = copy(article)
+
+        cloned_article.title = translator.translate(
+            text=cloned_article.title,
+            source_abbreviation=self.source_abbreviation,
+            target_abbreviation=target_abbreviation
+        )
+
+        cloned_article.summary = translator.translate(
+            text=cloned_article.summary,
+            source_abbreviation=self.source_abbreviation,
+            target_abbreviation=target_abbreviation
+        )
+
+        cloned_article.markdown = translator.translate(
+            text=cloned_article.markdown,
+            source_abbreviation=self.source_abbreviation,
+            target_abbreviation=target_abbreviation
+        )
+
+        return cloned_article
 
     def clone_landing_for_translation(self, folder_name: str) -> Landing:
         workdir = self.landing.workdir / folder_name

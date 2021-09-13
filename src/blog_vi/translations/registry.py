@@ -1,6 +1,6 @@
 from typing import Type
 
-from jinja2.nodes import Dict
+from typing import Dict
 
 from .exceptions import TranslateEngineNotFound
 from .providers.base import BaseTranslateProvider

@@ -12,6 +12,7 @@ from jinja2 import FileSystemLoader, Environment
 from slugify import slugify
 
 from ._config import SETTINGS_FILENAME
+from .translations.engine import TranslateEngine
 from .utils import get_md_file, ImgExtExtension, H1H2Extension, get_articles_from_csv, prepare_workdir
 from ._settings import Settings, get_settings
 
@@ -49,7 +50,7 @@ class Landing:
 
         # List of categories. Filled from the articles categories automatically.
         self._categories: Dict[str, 'Landing'] = {}
-        
+
     @classmethod
     def from_settings(cls, settings: 'Settings') -> 'Landing':
         """Return an instance from the given settings and automatically prepare neccessary parameters."""
@@ -317,5 +318,8 @@ def generate_blog(workdir: Path) -> None:
 
         article_obj = Article.from_config(settings, article)
         index.add_article(article_obj)
-    
+
+    engine = TranslateEngine(index, 'en')
+    engine.translate()
+
     index.generate()
