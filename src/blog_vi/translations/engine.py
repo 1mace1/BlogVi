@@ -1,6 +1,6 @@
-from copy import copy
-
+from pathlib import Path
 from .exceptions import TranslateEngineNotFound
+from .providers import DeeplTranslateProvider
 from .registry import translation_provider_registry
 from blog_vi.__main__ import Landing, Article
 
@@ -15,11 +15,11 @@ class TranslateEngine:
         self.translator = self.settings.translator
 
         if not self.translator:
-            raise TranslateEngineNotFound(f'{self.translator} not found')
+            raise TranslateEngineNotFound(message=f'{self.translator} not found')
 
     def translate(self) -> None:
         """Translate landing and its articles into specified in the settings languages."""
-        for target_abbreviation in self.settings.translate_list:
+        for target_abbreviation in self.settings.translation_list:
             translated_landing = self.translate_landing(target_abbreviation)
             translated_landing.generate()
 
@@ -41,16 +41,15 @@ class TranslateEngine:
         specified by `target_abbreviation` param.
         """
 
-        translator_cls = translation_provider_registry.get_provider(self.translator)
-        translator = translator_cls(api_key='')
-        cloned_article = copy(article)
+        translator_cls = translation_provider_registry.get_provider(self.translator) or DeeplTranslateProvider
+        translator = translator_cls('')
+        cloned_article = self.clone_article_for_translation(article, target_abbreviation)
 
         cloned_article.title = translator.translate(
             text=cloned_article.title,
             source_abbreviation=self.source_abbreviation,
             target_abbreviation=target_abbreviation
         )
-
         cloned_article.summary = translator.translate(
             text=cloned_article.summary,
             source_abbreviation=self.source_abbreviation,
@@ -66,12 +65,33 @@ class TranslateEngine:
         return cloned_article
 
     def clone_landing_for_translation(self, folder_name: str) -> Landing:
-        workdir = self.landing.workdir / folder_name
+        workdir = Path(f'{self.landing.workdir}/{folder_name}')
+        workdir.mkdir(exist_ok=True)
 
         return Landing(
             self.settings,
             self.landing.name,
             link_menu=self.landing.link_menu,
             search_config=self.landing.search_config,
+            workdir=workdir
+        )
+
+    def clone_article_for_translation(self, article, folder_name: str) -> Article:
+        workdir = Path(f'{self.landing.workdir}/{folder_name}')
+        workdir.mkdir(exist_ok=True)
+        return Article(
+            self.settings,
+            title=article.title,
+            author_name=article.author_name,
+            author_email=article.author_email,
+            author_info=article.author_info,
+            author_image=article.author_image,
+            author_social=article.author_social,
+            header_image=article.header_image,
+            summary=article.summary,
+            categories=article.categories,
+            status=int(article.status),
+            timestamp=article.timestamp,
+            markdown=article.markdown,
             workdir=workdir
         )

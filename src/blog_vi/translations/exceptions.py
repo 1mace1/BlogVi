@@ -2,7 +2,7 @@ class TranslateError(Exception):
     """Base exception."""
     default_message: str = 'Translate error.'
 
-    def __init__(self, message: str, *args):
+    def __init__(self, message: str = None, *args):
         self.message = message or self.get_message()
 
         super().__init__(message, *args)
@@ -16,6 +16,7 @@ class TranslateError(Exception):
 
 class TranslateEngineNotFound(TranslateError):
     """Translate provider not found"""
+
     def get_message(self) -> str:
         from .registry import translation_provider_registry
 

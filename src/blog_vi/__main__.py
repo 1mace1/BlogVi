@@ -12,7 +12,6 @@ from jinja2 import FileSystemLoader, Environment
 from slugify import slugify
 
 from ._config import SETTINGS_FILENAME
-from .translations.engine import TranslateEngine
 from .utils import get_md_file, ImgExtExtension, H1H2Extension, get_articles_from_csv, prepare_workdir
 from ._settings import Settings, get_settings
 
@@ -36,7 +35,8 @@ class Landing:
     ):
         self.settings = settings
 
-        self.workdir = settings.workdir or workdir
+        self.workdir = workdir or settings.workdir
+        Path(f"{self.workdir}/articles").mkdir(exist_ok=True)
         self.templates_dir = settings.templates_dir
 
         self.name = name
@@ -102,7 +102,7 @@ class Landing:
                 category_landings[category] = category_landing
 
         return category_landings
-        
+
     def pregenerate_articles(self) -> List['Article']:
         """A hook returning pregenerated articles, that are ready to be generated."""
         generated_articles = []
@@ -146,7 +146,7 @@ class Landing:
         env = Environment(loader=directory_loader)
 
         template = env.get_template(self.template)
-        
+
         template_categories = {(category, f'{slugify(category)}.html') for category in self._categories.keys()}
         head_article = self._articles[0] if self._articles else None
 
@@ -157,7 +157,7 @@ class Landing:
             searchConfig=self.search_config,
             settings=self.settings
         )
-        
+
         for category, landing in self._categories.items():
             # `is_category` MUST always be set to True, when generating non-index pages.
             landing.generate(f'{slugify(category)}.html', is_category=True)
@@ -182,13 +182,13 @@ class Landing:
 class Article:
     """Class representing an article in the blog."""
     base_template: str = 'article.html'
-    
+
     def __init__(self, settings: 'Settings', title, timestamp, header_image, author_name, author_image, author_email,
                  summary, categories, markdown, author_info, author_social, status, previous=None, next=None,
-                 template=None):
+                 template=None, workdir=None):
         self.settings = settings
 
-        self.workdir = settings.workdir
+        self.workdir = workdir or settings.workdir
         self.templates_dir = settings.templates_dir
 
         # Article card data
@@ -254,7 +254,7 @@ class Article:
         )
 
         filepath.write_text(rendered)
-        
+
     def _md_to_html(self) -> Path:
         """Convert markdown content to the html one and return the path to resulting file."""
         md = markdown.Markdown(extensions=[ImgExtExtension(), H1H2Extension()])
@@ -319,6 +319,7 @@ def generate_blog(workdir: Path) -> None:
         article_obj = Article.from_config(settings, article)
         index.add_article(article_obj)
 
+    from .translations.engine import TranslateEngine
     engine = TranslateEngine(index, 'en')
     engine.translate()
 

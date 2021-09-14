@@ -12,9 +12,9 @@
           integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w=="
           crossorigin="anonymous"/>
     <link href="https://fonts.googleapis.com/css?family=Nunito:400,700,800" rel="stylesheet">
-    <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="../../apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
     <link rel="manifest" href="../site.webmanifest">
     <link rel="mask-icon" href="../safari-pinned-tab.svg" color="#5bbad5">
     <meta name="msapplication-TileColor" content="#00aba9">
@@ -45,6 +45,7 @@
 
 
     <link href="templates/assets/css/tailwind.min.css" rel="stylesheet">
+    <link href="../templates/assets/css/tailwind.min.css" rel="stylesheet">
 
 </head>
 
@@ -129,6 +130,7 @@
 <script src="https://unpkg.com/tippy.js@4"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6"></script>
 <script src="templates/assets/js/search.js"></script>
+<script src="../templates/assets/js/search.js"></script>
 
 <script>    /* Progress bar */
 //Source: https://alligator.io/js/progress-bar-javascript-css-variables/
@@ -232,6 +234,7 @@ tippy('.avatar')
     <script src="https://unpkg.com/sharect@2.0.0/dist/sharect.js"></script>
     <script>window["sharectConfig"] = {{ settings.sharect|tojson|safe }}</script>
     <script src="templates/assets/js/sharect.js"></script>
+    <script src="../templates/assets/js/sharect.js"></script>
 {% endif %}
 
 </body>
