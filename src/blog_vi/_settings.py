@@ -2,12 +2,8 @@ from pathlib import Path
 from typing import Optional
 
 import yaml
-from environ import Env
 
 from ._config import SETTINGS_DEFAULTS, SETTINGS_FILENAME
-
-env = Env()
-env.read_env()
 
 
 class SettingsError(Exception):

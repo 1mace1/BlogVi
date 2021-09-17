@@ -4,6 +4,7 @@ import deepl
 
 class DeeplTranslateProvider(BaseTranslateProvider):
     id = 'deepl'
+    settings_key = 'deepl_translator'
 
     def translate(self, text: str, source_abbreviation: str, target_abbreviation: str) -> str:
         api_key = getattr(self, '_BaseTranslateProvider__api_key')

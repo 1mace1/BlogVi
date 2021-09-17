@@ -1,5 +1,4 @@
 from pathlib import Path
-from .exceptions import TranslateEngineNotFound
 from .registry import translation_provider_registry
 from blog_vi.__main__ import Landing, Article
 
@@ -31,7 +30,6 @@ class TranslateEngine:
 
         for article in self.landing._articles:
             translated_landing.add_article(self.translate_article(article, target_abbreviation))
-            break
 
         return translated_landing
 
