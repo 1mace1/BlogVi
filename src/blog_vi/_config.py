@@ -34,6 +34,6 @@ SETTINGS_DEFAULTS = {
         'keywords': '',
         'url': '',
         'author': ''
-    }
+    },
+    'translator': None
 }
-

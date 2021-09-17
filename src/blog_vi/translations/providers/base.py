@@ -4,8 +4,8 @@ from ..registry import translation_provider_registry
 
 
 class TranslateProviderMeta(ABCMeta):
-    def __new__(mcs, *args, **kwargs):
-        obj = super().__new__(mcs, *args, **kwargs)
+    def __new__(mcs, name, bases, attrs):
+        obj = super().__new__(mcs, name, bases, attrs)
 
         translation_provider_registry.register_provider(obj)
 

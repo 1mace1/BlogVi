@@ -1,8 +1,8 @@
 from pathlib import Path
 from typing import Optional
-from environs import Env
 
 import yaml
+from environ import Env
 
 from ._config import SETTINGS_DEFAULTS, SETTINGS_FILENAME
 
