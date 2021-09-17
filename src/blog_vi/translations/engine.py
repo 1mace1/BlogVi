@@ -1,6 +1,5 @@
 from pathlib import Path
 from .exceptions import TranslateEngineNotFound
-from .providers import DeeplTranslateProvider
 from .registry import translation_provider_registry
 from blog_vi.__main__ import Landing, Article
 
@@ -11,11 +10,11 @@ class TranslateEngine:
         self.source_abbreviation = source_abbreviation
 
         self.settings = landing.settings
+        self.translator = self.get_translate_engine(self.settings)
 
-        self.translator = self.settings.translator
-
-        if not self.translator:
-            raise TranslateEngineNotFound(message=f'{self.translator} not found')
+    def get_translate_engine(self, settings):
+        translator_cls = translation_provider_registry.get_provider(settings.translator)
+        return translator_cls.from_settings(settings)
 
     def translate(self) -> None:
         """Translate landing and its articles into specified in the settings languages."""
@@ -32,6 +31,7 @@ class TranslateEngine:
 
         for article in self.landing._articles:
             translated_landing.add_article(self.translate_article(article, target_abbreviation))
+            break
 
         return translated_landing
 
@@ -41,22 +41,20 @@ class TranslateEngine:
         specified by `target_abbreviation` param.
         """
 
-        translator_cls = translation_provider_registry.get_provider(self.translator) or DeeplTranslateProvider
-        translator = translator_cls('')
         cloned_article = self.clone_article_for_translation(article, target_abbreviation)
 
-        cloned_article.title = translator.translate(
+        cloned_article.title = self.translator.translate(
             text=cloned_article.title,
             source_abbreviation=self.source_abbreviation,
             target_abbreviation=target_abbreviation
         )
-        cloned_article.summary = translator.translate(
+        cloned_article.summary = self.translator.translate(
             text=cloned_article.summary,
             source_abbreviation=self.source_abbreviation,
             target_abbreviation=target_abbreviation
         )
 
-        cloned_article.markdown = translator.translate(
+        cloned_article.markdown = self.translator.translate(
             text=cloned_article.markdown,
             source_abbreviation=self.source_abbreviation,
             target_abbreviation=target_abbreviation
