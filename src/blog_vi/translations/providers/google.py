@@ -12,7 +12,7 @@ class GoogleTranslateProvider(BaseTranslateProvider):
     def translate(self, text: str, source_abbreviation: str, target_abbreviation: str) -> str:
         provider = self.get_provider()
         result = provider.translate(text, target_abbreviation)
-        return result["translatedText"]
+        return result.get("translatedText")
 
     def get_provider(self):
         return translate.Client()
