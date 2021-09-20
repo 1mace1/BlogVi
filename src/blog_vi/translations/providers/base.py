@@ -15,8 +15,8 @@ class TranslateProviderMeta(ABCMeta):
 class BaseTranslateProvider(ABC, metaclass=TranslateProviderMeta):
     settings_key = ''
 
-    def __init__(self, api_key: str):
-        self.__api_key = api_key
+    def __init__(self, *args, **kwargs):
+        pass
 
     @property
     @abstractmethod
@@ -31,3 +31,7 @@ class BaseTranslateProvider(ABC, metaclass=TranslateProviderMeta):
     def from_settings(cls, settings):
         engine_settings = getattr(settings, cls.settings_key)
         return cls(**engine_settings)
+
+    @abstractmethod
+    def get_provider(self):
+        pass

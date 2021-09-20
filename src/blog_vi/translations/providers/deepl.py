@@ -6,8 +6,13 @@ class DeeplTranslateProvider(BaseTranslateProvider):
     id = 'deepl'
     settings_key = 'deepl_translator'
 
+    def __init__(self, api_key: str):
+        self.__api_key = api_key
+
     def translate(self, text: str, source_abbreviation: str, target_abbreviation: str) -> str:
-        api_key = getattr(self, '_BaseTranslateProvider__api_key')
-        translator = deepl.Translator(auth_key=api_key)
-        result = translator.translate_text(text, source_lang=source_abbreviation, target_lang=target_abbreviation)
+        provider = self.get_provider()
+        result = provider.translate_text(text, source_lang=source_abbreviation, target_lang=target_abbreviation)
         return result.text
+
+    def get_provider(self):
+        return deepl.Translator(auth_key=self.__api_key)
