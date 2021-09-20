@@ -7,3 +7,4 @@ python-slugify
 pyyaml
 click
 deepl
+google-cloud-translate

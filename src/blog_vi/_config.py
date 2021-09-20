@@ -37,5 +37,6 @@ SETTINGS_DEFAULTS = {
     },
     'translator': None,
     'deepl_translator': {},
+    'google_translator': {},
     'translation_list': []
 }
