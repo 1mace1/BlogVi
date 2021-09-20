@@ -35,5 +35,7 @@ SETTINGS_DEFAULTS = {
         'url': '',
         'author': ''
     },
-    'translator': None
+    'translator': None,
+    'deepl_translator': {},
+    'translation_list': []
 }

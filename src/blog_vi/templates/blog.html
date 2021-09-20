@@ -44,8 +44,7 @@
     <meta property="twitter:image" content="{{ settings.landing_meta.image }}">
 
 
-    <link href="templates/assets/css/tailwind.min.css" rel="stylesheet">
-    <link href="../templates/assets/css/tailwind.min.css" rel="stylesheet">
+    <link href="/{{ settings.blog_root }}/templates/assets/css/tailwind.min.css" rel="stylesheet">
 
 </head>
 
@@ -63,7 +62,7 @@
             <ul class="list-reset w-full flex flex-wrap flex-1 md:flex-none">
                 <li class="mr-2">
                     <a class="rounded bg-green-500 text-white px-1 uppercase text-xs whitespace-nowrap md:text-sm"
-                       href="index.html">ALL</a>
+                       href="/{{ settings.blog_root }}/index.html">ALL</a>
                 </li>
                 {% for category in categories %}
                     <li class="mr-2">
@@ -129,8 +128,7 @@
 <script src="https://unpkg.com/popper.js@1/dist/umd/popper.min.js"></script>
 <script src="https://unpkg.com/tippy.js@4"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6"></script>
-<script src="templates/assets/js/search.js"></script>
-<script src="../templates/assets/js/search.js"></script>
+<script src="/{{ settings.blog_root }}/templates/assets/js/search.js"></script>
 
 <script>    /* Progress bar */
 //Source: https://alligator.io/js/progress-bar-javascript-css-variables/
@@ -233,8 +231,7 @@ tippy('.avatar')
 {% if settings.sharect.enabled %}
     <script src="https://unpkg.com/sharect@2.0.0/dist/sharect.js"></script>
     <script>window["sharectConfig"] = {{ settings.sharect|tojson|safe }}</script>
-    <script src="templates/assets/js/sharect.js"></script>
-    <script src="../templates/assets/js/sharect.js"></script>
+    <script src="/{{ settings.blog_root }}/templates/assets/js/sharect.js"></script>
 {% endif %}
 
 </body>

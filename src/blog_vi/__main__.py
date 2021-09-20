@@ -216,7 +216,8 @@ class Article:
 
         # Misc
         self.slug = slugify(title)
-        self.path = f'articles/{self.slug}/'
+        self.path = str(Path('articles', self.slug))
+        self.root_path = str((self.settings.blog_root, 'articles', self.slug))
         self.template = template or self.base_template
 
         self.url = self.prepare_url()

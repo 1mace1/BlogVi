@@ -62,12 +62,10 @@ class Settings:
         for optional_name, optional_default in self.optional.items():
             self.__dict__.update({optional_name: settings.get(optional_name, optional_default)})
 
-        # Fill other settings if they exist
-        for key, value in settings.items():
-            try:
-                self.__dict__.update({key: settings[key]})
-            except KeyError:
-                pass
+    @property
+    def blog_root(self):
+        root = Path(self.blog_root_url)
+        return root
 
 
 def get_settings(filename: str = SETTINGS_FILENAME) -> dict:
