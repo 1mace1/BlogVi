@@ -43,3 +43,7 @@ class ProviderError(Exception):
 
 class ProviderSettingsNotFound(ProviderError):
     default_message = "Provider settings not found"
+
+
+class BadProviderSettingsError(ProviderError):
+    default_message = "Provider settings filled incorrect"

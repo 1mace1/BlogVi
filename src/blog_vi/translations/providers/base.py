@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod, ABCMeta
 
+from ..exceptions import ProviderSettingsNotFound, BadProviderSettingsError
 from ..registry import translation_provider_registry
 
 
@@ -30,7 +31,10 @@ class BaseTranslateProvider(ABC, metaclass=TranslateProviderMeta):
     @classmethod
     def from_settings(cls, settings):
         engine_settings = getattr(settings, cls.settings_key)
-        return cls(**engine_settings)
+        try:
+            return cls(**engine_settings)
+        except TypeError:
+            raise BadProviderSettingsError
 
     @abstractmethod
     def get_provider(self):

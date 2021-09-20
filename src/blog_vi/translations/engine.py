@@ -1,4 +1,6 @@
 from pathlib import Path
+
+from .exceptions import ProviderSettingsNotFound, BadProviderSettingsError
 from .registry import translation_provider_registry
 from blog_vi.__main__ import Landing, Article
 
@@ -11,8 +13,15 @@ class TranslateEngine:
         self.settings = landing.settings
         self.translator = self.get_translate_engine(self.settings)
 
+        if self.translator is None:
+            raise BadProviderSettingsError
+
     def get_translate_engine(self, settings):
         translator_cls = translation_provider_registry.get_provider(settings.translator)
+
+        if translator_cls is None:
+            raise ProviderSettingsNotFound
+
         return translator_cls.from_settings(settings)
 
     def translate(self) -> None:

@@ -334,11 +334,11 @@ def generate_blog(workdir: Path) -> None:
     if settings.translate_articles:
         try:
             if settings.source_abbreviation is None:
-                print(f'[-] Please provide source language')
+                print('[-] Please, provide a source language abbreviation.')
                 sys.exit(1)
             engine = TranslateEngine(index, settings.source_abbreviation)
         except ProviderSettingsNotFound:
-            print('[-] Provider settings not found')
+            print(f'[-] Settings not found for translate provider {settings.translator}')
         except TranslateEngineNotFound:
             print('[-] Translate engine not found')
         else:
