@@ -1,4 +1,6 @@
 from pathlib import Path
+
+from .exceptions import ProviderSettingsNotFound, BadProviderSettingsError
 from .registry import translation_provider_registry
 from blog_vi.__main__ import Landing, Article
 
@@ -11,15 +13,25 @@ class TranslateEngine:
         self.settings = landing.settings
         self.translator = self.get_translate_engine(self.settings)
 
+        if self.translator is None:
+            raise BadProviderSettingsError
+
     def get_translate_engine(self, settings):
         translator_cls = translation_provider_registry.get_provider(settings.translator)
+
+        if translator_cls is None:
+            raise ProviderSettingsNotFound
+
         return translator_cls.from_settings(settings)
 
     def translate(self) -> None:
         """Translate landing and its articles into specified in the settings languages."""
         for target_abbreviation in self.settings.translation_list:
-            translated_landing = self.translate_landing(target_abbreviation)
-            translated_landing.generate()
+            try:
+                translated_landing = self.translate_landing(target_abbreviation)
+                translated_landing.generate()
+            except Exception as e:
+                print(f'[-] Something went wrong when translating. Error - {e}')
 
     def translate_landing(self, target_abbreviation: str) -> Landing:
         """
@@ -29,7 +41,10 @@ class TranslateEngine:
         translated_landing = self.clone_landing_for_translation(target_abbreviation)
 
         for article in self.landing._articles:
-            translated_landing.add_article(self.translate_article(article, target_abbreviation))
+            try:
+                translated_landing.add_article(self.translate_article(article, target_abbreviation))
+            except Exception as e:
+                print(f'[-] Something went wrong when translating article {article.title} - {e}')
 
         return translated_landing
 
