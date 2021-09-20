@@ -66,5 +66,6 @@ translation_list:
   - ca
 
 translator: deepl # or google
+source_abbreviation: en
 # User should select an available translator or get warned if `translate_articles` is set to true, but translator is not.
 

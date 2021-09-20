@@ -37,5 +37,7 @@ SETTINGS_DEFAULTS = {
     },
     'translator': None,
     'deepl_translator': {},
-    'translation_list': []
+    'translation_list': [],
+    'translate_articles': None,
+    'source_abbreviation': None,
 }

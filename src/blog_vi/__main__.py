@@ -1,5 +1,6 @@
 import json
 import mimetypes
+import sys
 from datetime import datetime, timezone
 from functools import reduce
 from pathlib import Path
@@ -12,6 +13,7 @@ from jinja2 import FileSystemLoader, Environment
 from slugify import slugify
 
 from ._config import SETTINGS_FILENAME
+from .translations.exceptions import ProviderSettingsNotFound, TranslateEngineNotFound
 from .utils import get_md_file, ImgExtExtension, H1H2Extension, get_articles_from_csv, prepare_workdir
 from ._settings import Settings, get_settings
 
@@ -306,6 +308,8 @@ class Article:
 
 
 def generate_blog(workdir: Path) -> None:
+    from .translations.engine import TranslateEngine
+
     workdir, templates_dir = prepare_workdir(workdir)
 
     settings_dict = get_settings(workdir / SETTINGS_FILENAME)
@@ -325,8 +329,20 @@ def generate_blog(workdir: Path) -> None:
         article_obj = Article.from_config(settings, article)
         index.add_article(article_obj)
 
-    from .translations.engine import TranslateEngine
-    engine = TranslateEngine(index, 'en')
-    engine.translate()
-
     index.generate()
+
+    if settings.translate_articles:
+        try:
+            if settings.source_abbreviation is None:
+                print(f'[-] Please provide source language')
+                sys.exit(1)
+            engine = TranslateEngine(index, settings.source_abbreviation)
+        except ProviderSettingsNotFound:
+            print('[-] Provider settings not found')
+        except TranslateEngineNotFound:
+            print('[-] Translate engine not found')
+        else:
+            print("ok")
+            # engine.translate()
+
+

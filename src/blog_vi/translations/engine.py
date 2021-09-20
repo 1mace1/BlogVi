@@ -18,8 +18,11 @@ class TranslateEngine:
     def translate(self) -> None:
         """Translate landing and its articles into specified in the settings languages."""
         for target_abbreviation in self.settings.translation_list:
-            translated_landing = self.translate_landing(target_abbreviation)
-            translated_landing.generate()
+            try:
+                translated_landing = self.translate_landing(target_abbreviation)
+                translated_landing.generate()
+            except Exception as e:
+                print(f'[-] Something went wrong when translating. Error - {e}')
 
     def translate_landing(self, target_abbreviation: str) -> Landing:
         """
@@ -29,7 +32,10 @@ class TranslateEngine:
         translated_landing = self.clone_landing_for_translation(target_abbreviation)
 
         for article in self.landing._articles:
-            translated_landing.add_article(self.translate_article(article, target_abbreviation))
+            try:
+                translated_landing.add_article(self.translate_article(article, target_abbreviation))
+            except Exception as e:
+                print(f'[-] Something went wrong when translating article {article.title} - {e}')
 
         return translated_landing
 
