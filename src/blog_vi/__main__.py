@@ -39,6 +39,8 @@ class Landing:
         Path(f"{self.workdir}/articles").mkdir(exist_ok=True)
         self.templates_dir = settings.templates_dir
 
+        self.root_url = urljoin(str(settings.blog_root), str(self.workdir))
+
         self.name = name
         self.link_menu = link_menu or {}
         self.search_config = search_config or {}
@@ -52,7 +54,7 @@ class Landing:
         self._categories: Dict[str, 'Landing'] = {}
 
     @classmethod
-    def from_settings(cls, settings: 'Settings') -> 'Landing':
+    def from_settings(cls, settings: 'Settings', **kwargs) -> 'Landing':
         """Return an instance from the given settings and automatically prepare neccessary parameters."""
         search_config = cls.prepare_search_config(settings.search_config)
 
@@ -61,6 +63,7 @@ class Landing:
             settings.blog_name,
             link_menu=settings.link_menu,
             search_config=search_config,
+            **kwargs
         )
 
     def generate_rss(self):
@@ -97,7 +100,8 @@ class Landing:
 
         for article in self._articles:
             for category in article.categories:
-                category_landing = category_landings.get(category, Landing.from_settings(self.settings))
+                category_landing = category_landings.get(category,
+                                                         Landing.from_settings(self.settings, workdir=self.workdir))
                 category_landing.add_article(article)
                 category_landings[category] = category_landing
 
@@ -151,11 +155,12 @@ class Landing:
         head_article = self._articles[0] if self._articles else None
 
         rendered = template.render(
-            blogs=self._articles[1:],
-            head_blog=head_article,
+            articles=self._articles[1:],
+            head_article=head_article,
             categories=template_categories,
             searchConfig=self.search_config,
-            settings=self.settings
+            settings=self.settings,
+            blog=self
         )
 
         for category, landing in self._categories.items():
