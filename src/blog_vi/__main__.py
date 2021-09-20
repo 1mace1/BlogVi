@@ -13,7 +13,7 @@ from jinja2 import FileSystemLoader, Environment
 from slugify import slugify
 
 from ._config import SETTINGS_FILENAME
-from .translations.exceptions import ProviderSettingsNotFound, TranslateEngineNotFound
+from .translations.exceptions import ProviderSettingsNotFound, TranslateEngineNotFound, BadProviderSettingsError
 from .utils import get_md_file, ImgExtExtension, H1H2Extension, get_articles_from_csv, prepare_workdir
 from ._settings import Settings, get_settings
 
@@ -341,8 +341,8 @@ def generate_blog(workdir: Path) -> None:
             print(f'[-] Settings not found for translate provider {settings.translator}')
         except TranslateEngineNotFound:
             print('[-] Translate engine not found')
+        except BadProviderSettingsError:
+            print(f'[-] Please, fill all {settings.translator} provider settings')
         else:
             print("ok")
             # engine.translate()
-
-
