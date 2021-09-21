@@ -343,6 +343,8 @@ def generate_blog(workdir: Path) -> None:
             print('[-] Translate engine not found')
         except BadProviderSettingsError:
             print(f'[-] Please, fill all {settings.translator} provider settings')
+        except TypeError:
+            print('[-] Please define translator provider in settings')
         else:
             print("ok")
             # engine.translate()

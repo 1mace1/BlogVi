@@ -1,6 +1,9 @@
 from pathlib import Path
 
-from .exceptions import ProviderSettingsNotFound, BadProviderSettingsError
+from .exceptions import (
+    BadProviderSettingsError,
+    TranslateEngineNotFound
+)
 from .registry import translation_provider_registry
 from blog_vi.__main__ import Landing, Article
 
@@ -20,7 +23,7 @@ class TranslateEngine:
         translator_cls = translation_provider_registry.get_provider(settings.translator)
 
         if translator_cls is None:
-            raise ProviderSettingsNotFound
+            raise TranslateEngineNotFound
 
         return translator_cls.from_settings(settings)
 
