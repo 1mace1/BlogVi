@@ -41,10 +41,9 @@ class Landing:
         self.workdir = workdir or settings.workdir
         self.blog_root_dir = rootdir or self.workdir
 
-
         self.templates_dir = settings.templates_dir
 
-        self.root_url = urljoin(str(settings.blog_root), str(self.blog_root_dir))
+        self.root_url = str(settings.blog_root)
 
         self.name = name
         self.link_menu = link_menu or {}
@@ -356,4 +355,5 @@ def generate_blog(workdir: Path) -> None:
         except TypeError:
             print('[-] Please define translator provider in settings')
         else:
-            engine.translate()
+            print()
+            # engine.translate()
