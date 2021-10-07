@@ -355,5 +355,4 @@ def generate_blog(workdir: Path) -> None:
         except TypeError:
             print('[-] Please define translator provider in settings')
         else:
-            print()
-            # engine.translate()
+            engine.translate()
